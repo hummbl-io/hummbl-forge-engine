@@ -12,6 +12,9 @@ members = [
     "crates/forge-adapter/ue5",
     "crates/forge-adapter/forge2d",
 ]
+exclude = [
+    "test-game",  # test-game is an independent Bevy project, not part of the Forge workspace
+]
 
 [workspace.package]
 version = "0.1.0"

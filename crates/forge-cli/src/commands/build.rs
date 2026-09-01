@@ -34,11 +34,38 @@ pub async fn run(
         );
     }
 
+    let mut results = Vec::new();
     for target in &targets {
-        tracing::info!("  Target: {target}");
-        // TODO: dispatch to the appropriate adapter via forge-build
+        match forge_build::pipeline::build(&project, target, profile).await {
+            Ok(result) => {
+                tracing::info!(
+                    "  ✓ {} → {} (hash: {})",
+                    target,
+                    result.output_path.display(),
+                    result.manifest.build_hash
+                );
+                results.push(result);
+            }
+            Err(e) => {
+                tracing::error!("  ✗ {} → {e}", target);
+                return Err(e);
+            }
+        }
     }
 
-    tracing::info!("Build pipeline not yet implemented — this is a scaffold.");
+    tracing::info!(
+        "Build complete: {}/{} targets succeeded",
+        results.len(),
+        targets.len()
+    );
+
+    // Write build manifest
+    if let Some(first) = results.first() {
+        let manifest_path = std::path::Path::new("build-manifest.json");
+        let manifest_json = serde_json::to_string_pretty(&first.manifest)?;
+        std::fs::write(manifest_path, manifest_json)?;
+        tracing::info!("Manifest written to {}", manifest_path.display());
+    }
+
     Ok(())
 }

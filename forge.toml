@@ -1,0 +1,30 @@
+version = "0.1.0"
+
+[project]
+name = "Forge Test Game"
+id = "com.hummbl.testgame"
+description = "A minimal Bevy game to prove the Forge Engine pipeline"
+authors = ["HUMMBL"]
+
+[engine]
+kind = "forge2d"
+cargo_toml = "test-game/Cargo.toml"
+
+[build]
+targets = ["linux-native"]
+profile = "release"
+
+[publish]
+targets = ["linux-native", "direct"]
+dry_run = true
+
+[mods]
+enabled = false
+sandbox = true
+
+[assets]
+assets_dir = "assets"
+
+[assets.blender]
+source_dir = "blender"
+export_format = "glTF"

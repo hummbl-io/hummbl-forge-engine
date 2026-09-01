@@ -1,0 +1,11 @@
+[package]
+name = "test-game"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "test-game"
+path = "src/main.rs"
+
+[dependencies]
+bevy = "0.14"

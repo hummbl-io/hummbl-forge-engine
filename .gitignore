@@ -38,3 +38,6 @@ secrets.toml
 # Editor local
 *.blend1
 *.blend2
+dist/
+build-manifest.json
+test-game/target/

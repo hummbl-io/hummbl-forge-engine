@@ -5,9 +5,15 @@ edition.workspace = true
 license.workspace = true
 authors.workspace = true
 
+[features]
+default = []
+ue5 = ["dep:forge-adapter-ue5"]
+
 [dependencies]
 forge-core = { workspace = true }
 forge-adapter = { workspace = true }
+forge-adapter-forge2d = { workspace = true }
+forge-adapter-ue5 = { workspace = true, optional = true }
 anyhow = { workspace = true }
 thiserror = { workspace = true }
 tracing = { workspace = true }
