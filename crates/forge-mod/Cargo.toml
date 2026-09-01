@@ -1,0 +1,15 @@
+[package]
+name = "forge-mod"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+forge-core = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+toml = { workspace = true }
+thiserror = { workspace = true }
+semver = { workspace = true }
+tracing = { workspace = true }

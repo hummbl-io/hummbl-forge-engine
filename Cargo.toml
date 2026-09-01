@@ -1,0 +1,55 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/forge-core",
+    "crates/forge-cli",
+    "crates/forge-build",
+    "crates/forge-publish",
+    "crates/forge-mod",
+    "crates/forge-version",
+    "crates/forge-asset",
+    "crates/forge-adapter",
+    "crates/forge-adapter/ue5",
+    "crates/forge-adapter/forge2d",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+authors = ["HUMMBL, LLC"]
+repository = "https://github.com/hummbl-io/hummbl-forge-engine"
+homepage = "https://github.com/hummbl-io/hummbl-forge-engine"
+
+[workspace.dependencies]
+# Internal crates
+forge-core = { path = "crates/forge-core" }
+forge-build = { path = "crates/forge-build" }
+forge-publish = { path = "crates/forge-publish" }
+forge-mod = { path = "crates/forge-mod" }
+forge-version = { path = "crates/forge-version" }
+forge-asset = { path = "crates/forge-asset" }
+forge-adapter = { path = "crates/forge-adapter" }
+forge-adapter-ue5 = { path = "crates/forge-adapter/ue5" }
+forge-adapter-forge2d = { path = "crates/forge-adapter/forge2d" }
+
+# External dependencies
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+clap = { version = "4", features = ["derive"] }
+thiserror = "1"
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tokio = { version = "1", features = ["full"] }
+semver = { version = "1", features = ["serde"] }
+sha2 = "0.10"
+hex = "0.4"
+async-trait = "0.1"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true

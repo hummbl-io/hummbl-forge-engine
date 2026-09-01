@@ -1,0 +1,40 @@
+# Rust
+/target
+**/*.rs.bk
+Cargo.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+/dist
+/build
+*.AppImage
+*.deb
+*.rpm
+
+# UE5 (when working with UE5 projects)
+*.uproject.user
+/Binaries/
+/Intermediate/
+/Saved/
+/DerivedDataCache/
+
+# Secrets — never commit
+.env
+.env.*
+*.pem
+*.key
+secrets.toml
+
+# Editor local
+*.blend1
+*.blend2
