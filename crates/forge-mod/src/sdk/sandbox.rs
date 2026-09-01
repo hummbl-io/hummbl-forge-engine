@@ -127,63 +127,79 @@ impl PermissionChecker {
             allowed_root.join(path)
         };
 
-        // Check for path traversal: count .. components and ensure the
-        // resolved path stays within the allowed root
-        let resolved_str = resolved.to_string_lossy();
-        let root_str = allowed_root.to_string_lossy();
+        // BLUE TEAM: Canonicalize the root for comparison
+        // If the root doesn't exist, normalize it lexically so that
+        // `./mods-data` and `mods-data` compare equal.
+        let canonical_root = std::fs::canonicalize(allowed_root)
+            .unwrap_or_else(|_| normalize_path(allowed_root));
 
-        // If the path contains .., check that the canonicalized form
-        // still starts with the allowed root
-        if normalized.contains("..") {
-            // Canonicalize the root (if it exists) for comparison
-            let canonical_root =
-                std::fs::canonicalize(allowed_root).unwrap_or_else(|_| allowed_root.to_path_buf());
+        // BLUE TEAM: Manually normalize the path by resolving .. components
+        // This handles cases where the file doesn't exist yet (canonicalize fails)
+        // First, make the path absolute by joining with the canonical root
+        // if it's relative
+        let absolute_resolved = if path.is_absolute() {
+            resolved.clone()
+        } else {
+            canonical_root.join(path)
+        };
+        let normalized_resolved = normalize_path(&absolute_resolved);
 
-            // Try to canonicalize the resolved path
-            // If the file doesn't exist yet, canonicalize the parent and join
-            let canonical_resolved = std::fs::canonicalize(&resolved).unwrap_or_else(|_| {
-                if let Some(parent) = resolved.parent() {
-                    if let Some(filename) = resolved.file_name() {
-                        std::fs::canonicalize(parent)
-                            .unwrap_or_else(|_| parent.to_path_buf())
-                            .join(filename)
-                    } else {
-                        resolved.clone()
-                    }
-                } else {
-                    resolved.clone()
-                }
+        // Try to canonicalize the normalized path (works if file exists)
+        let final_path =
+            std::fs::canonicalize(&normalized_resolved).unwrap_or(normalized_resolved.clone());
+
+        // Check if the final path is within the allowed root
+        let canonical_root_str = canonical_root.to_string_lossy();
+        let final_str = final_path.to_string_lossy();
+
+        if !final_str.starts_with(&*canonical_root_str) {
+            return Err(SandboxError::PathTraversal {
+                path: normalized.to_string(),
             });
-
-            let canonical_root_str = canonical_root.to_string_lossy();
-            let canonical_resolved_str = canonical_resolved.to_string_lossy();
-
-            if !canonical_resolved_str.starts_with(&*canonical_root_str) {
-                return Err(SandboxError::PathTraversal {
-                    path: normalized.to_string(),
-                });
-            }
-        }
-
-        // Also block absolute paths that don't start with the root
-        if path.is_absolute() && !resolved_str.starts_with(&*root_str) {
-            // Allow if it's within the root after canonicalization
-            let canonical_root =
-                std::fs::canonicalize(allowed_root).unwrap_or_else(|_| allowed_root.to_path_buf());
-            let canonical_resolved =
-                std::fs::canonicalize(&resolved).unwrap_or_else(|_| resolved.clone());
-            if !canonical_resolved
-                .to_string_lossy()
-                .starts_with(&*canonical_root.to_string_lossy())
-            {
-                return Err(SandboxError::PathTraversal {
-                    path: normalized.to_string(),
-                });
-            }
         }
 
         Ok(resolved)
     }
+}
+
+/// Normalize a path by resolving `.` and `..` components without requiring
+/// the path to exist on disk.
+///
+/// This is the BLUE TEAM fix for path traversal detection on non-existent
+/// paths. `std::fs::canonicalize` fails on non-existent paths, so we need
+/// a manual normalization that resolves `..` lexically.
+fn normalize_path(path: &Path) -> std::path::PathBuf {
+    let mut components = Vec::new();
+
+    for component in path.components() {
+        use std::path::Component;
+        match component {
+            Component::CurDir => { /* skip . */ }
+            Component::ParentDir => {
+                // Pop the last component if it's a normal component
+                // (don't pop root or prefix components)
+                if let Some(last) = components.last() {
+                    match last {
+                        Component::Normal(_) => {
+                            components.pop();
+                        }
+                        Component::RootDir | Component::Prefix(_) => {
+                            // Can't go above root — ignore ..
+                        }
+                        Component::ParentDir | Component::CurDir => {
+                            // Push the .. (will be resolved later or stays)
+                            components.push(Component::ParentDir);
+                        }
+                    }
+                } else {
+                    components.push(Component::ParentDir);
+                }
+            }
+            other => components.push(other),
+        }
+    }
+
+    components.iter().collect()
 }
 
 #[cfg(test)]

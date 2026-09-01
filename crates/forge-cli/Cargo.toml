@@ -31,3 +31,4 @@ toml = { workspace = true }
 [dev-dependencies]
 forge-asset = { workspace = true }
 forge-mod = { workspace = true }
+forge-version = { workspace = true }

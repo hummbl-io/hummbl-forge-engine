@@ -93,7 +93,7 @@ impl Lockfile {
     }
 
     /// Compute the integrity hash over all lockfile fields (except the hash itself).
-    fn compute_integrity_hash(&self) -> String {
+    pub fn compute_integrity_hash(&self) -> String {
         use sha2::{Digest, Sha256};
         let mut hasher = Sha256::new();
         hasher.update(self.format_version.to_string().as_bytes());
