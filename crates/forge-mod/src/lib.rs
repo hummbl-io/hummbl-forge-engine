@@ -8,9 +8,11 @@ pub mod loader;
 pub mod manifest;
 pub mod profiles;
 pub mod sdk;
+pub mod signing;
 
 pub use profiles::profile::{GameProfile, InstalledMod, ModInstallResult};
 pub use sdk::{
     DependencyResolver, HotReloader, ModApiVersion, ModContext, ModEvent, ModResult,
     PermissionChecker, ResolutionResult, SandboxConfig, SandboxError, MOD_API_VERSION,
 };
+pub use signing::{sign_mod, verify_mod_signature, TrustedKey, VerificationResult};

@@ -30,6 +30,10 @@ pub struct Lockfile {
     pub assets: Vec<AssetPin>,
     /// When the lockfile was generated (ISO 8601)
     pub generated_at: String,
+    /// Integrity hash — SHA-256 of all fields above (BLUE TEAM hardening).
+    /// Detects manual tampering with any lockfile field.
+    #[serde(default)]
+    pub integrity_hash: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -71,7 +75,7 @@ impl Lockfile {
         // Hash assets
         let assets = hash_assets(&project.assets.assets_dir)?;
 
-        Ok(Self {
+        let mut lockfile = Self {
             format_version: FORMAT_VERSION,
             project_id: project.project.id.clone(),
             project_version: project.version.clone(),
@@ -79,7 +83,48 @@ impl Lockfile {
             mods: Vec::new(), // populated when mods are installed
             assets,
             generated_at: current_timestamp(),
-        })
+            integrity_hash: None, // computed below
+        };
+
+        // BLUE TEAM: Compute integrity hash over all fields
+        lockfile.integrity_hash = Some(lockfile.compute_integrity_hash());
+
+        Ok(lockfile)
+    }
+
+    /// Compute the integrity hash over all lockfile fields (except the hash itself).
+    fn compute_integrity_hash(&self) -> String {
+        use sha2::{Digest, Sha256};
+        let mut hasher = Sha256::new();
+        hasher.update(self.format_version.to_string().as_bytes());
+        hasher.update(self.project_id.as_bytes());
+        hasher.update(self.project_version.as_bytes());
+        hasher.update(self.engine.kind.as_bytes());
+        hasher.update(self.engine.version.as_bytes());
+        hasher.update(self.engine.adapter_version.as_bytes());
+        for m in &self.mods {
+            hasher.update(m.id.as_bytes());
+            hasher.update(m.version.as_bytes());
+            hasher.update(m.hash.as_bytes());
+        }
+        for a in &self.assets {
+            hasher.update(a.path.as_bytes());
+            hasher.update(a.hash.as_bytes());
+        }
+        hasher.update(self.generated_at.as_bytes());
+        hex::encode(hasher.finalize())
+    }
+
+    /// Verify the integrity hash matches the current content.
+    /// Returns false if the lockfile has been tampered with.
+    pub fn verify_integrity(&self) -> bool {
+        match &self.integrity_hash {
+            Some(expected) => {
+                let computed = self.compute_integrity_hash();
+                computed == *expected
+            }
+            None => false, // missing integrity hash = untrusted
+        }
     }
 
     /// Write the lockfile to a file (TOML format).
@@ -100,7 +145,14 @@ impl Lockfile {
     }
 
     /// Check if the lockfile is up to date with the project.
+    /// Also verifies the integrity hash (BLUE TEAM hardening).
     pub fn is_up_to_date(&self, project: &ForgeProject) -> bool {
+        // BLUE TEAM: Verify integrity hash first
+        if !self.verify_integrity() {
+            tracing::warn!("lockfile integrity hash mismatch — file may have been tampered with");
+            return false;
+        }
+
         if self.project_id != project.project.id {
             return false;
         }
@@ -210,6 +262,7 @@ mod tests {
                 hash: "def456".to_string(),
             }],
             generated_at: "1234567890".to_string(),
+            integrity_hash: None,
         };
 
         let toml = toml::to_string(&lockfile).unwrap();
@@ -218,6 +271,39 @@ mod tests {
         assert_eq!(parsed.engine.kind, "forge2d");
         assert_eq!(parsed.mods.len(), 1);
         assert_eq!(parsed.assets.len(), 1);
+    }
+
+    #[test]
+    fn test_integrity_hash_tamper_detection() {
+        let mut lockfile = Lockfile {
+            format_version: 1,
+            project_id: "com.hummbl.test".to_string(),
+            project_version: "0.1.0".to_string(),
+            engine: EnginePin {
+                kind: "forge2d".to_string(),
+                version: "0.1.0".to_string(),
+                adapter_version: "0.1.0".to_string(),
+            },
+            mods: vec![],
+            assets: vec![],
+            generated_at: "1234567890".to_string(),
+            integrity_hash: None,
+        };
+
+        // Compute and set the integrity hash
+        lockfile.integrity_hash = Some(lockfile.compute_integrity_hash());
+
+        // Verify it passes
+        assert!(lockfile.verify_integrity());
+
+        // Tamper with the version
+        lockfile.project_version = "99.99.99".to_string();
+
+        // Verify it now fails
+        assert!(
+            !lockfile.verify_integrity(),
+            "tampered lockfile should fail integrity check"
+        );
     }
 
     #[test]

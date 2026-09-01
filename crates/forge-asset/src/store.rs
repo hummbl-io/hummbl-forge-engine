@@ -42,9 +42,23 @@ impl AssetStore {
     }
 
     /// Add a file to the store. Returns the hash and stored path.
+    ///
+    /// Symlinks are rejected to prevent information leakage from outside
+    /// the store (BLUE TEAM hardening — addresses RED-TEAM-FINDING-4).
     pub fn add(&self, source: &Path) -> anyhow::Result<AssetEntry> {
+        // BLUE TEAM: Reject symlinks to prevent info leak attacks
+        let metadata = std::fs::symlink_metadata(source)
+            .map_err(|e| anyhow::anyhow!("failed to stat file: {e}"))?;
+
+        if metadata.file_type().is_symlink() {
+            anyhow::bail!(
+                "symlinks are not allowed in the asset store (path: {})",
+                source.display()
+            );
+        }
+
         let hash = hash_file(source).map_err(|e| anyhow::anyhow!("failed to hash file: {e}"))?;
-        let size = std::fs::metadata(source)?.len();
+        let size = metadata.len();
 
         // Determine format from extension
         let format = source
