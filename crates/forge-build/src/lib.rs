@@ -4,4 +4,9 @@
 //! signed build artifact.
 
 pub mod artifact;
+pub mod cache;
+pub mod parallel;
 pub mod pipeline;
+
+pub use cache::{BuildCache, CacheEntry};
+pub use parallel::{build_parallel, BuildTarget, ParallelBuildRequest, ParallelBuildResult};

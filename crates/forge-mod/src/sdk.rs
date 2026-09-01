@@ -1,18 +1,22 @@
-//! Mod SDK — tools for mod authors.
+//! Mod SDK — tools for mod authors and the runtime for mod execution.
 //!
-//! Provides the API surface that mods call when running inside a
-//! Forge Engine game. This is the "moddable-by-design" layer.
+//! Provides:
+//! - Mod API version tracking
+//! - Lua scripting runtime (via rlua)
+//! - Permission sandboxing
+//! - Dependency resolution
+//! - Hot-reload support
+//! - Mod context and lifecycle
+
+pub mod api;
+pub mod deps;
+pub mod hot_reload;
+pub mod sandbox;
+
+pub use api::{ModApiVersion, ModContext, ModEvent, ModResult};
+pub use deps::{DependencyResolver, ResolutionResult};
+pub use hot_reload::HotReloader;
+pub use sandbox::{PermissionChecker, SandboxConfig, SandboxError};
 
 /// The mod API version.
 pub const MOD_API_VERSION: &str = "0.1.0";
-
-/// Context provided to a mod when it loads.
-#[derive(Debug)]
-pub struct ModContext {
-    /// The mod's own filesystem path
-    pub mod_path: std::path::PathBuf,
-    /// The game's data directory
-    pub game_data_path: std::path::PathBuf,
-    /// Permissions granted to this mod
-    pub permissions: Vec<crate::manifest::ModPermission>,
-}
