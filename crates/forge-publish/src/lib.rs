@@ -5,7 +5,9 @@
 
 pub mod direct;
 pub mod linux_native;
+pub mod signing;
 pub mod store;
 pub mod stores;
 
+pub use signing::{sign_binary, SigningConfig, SigningResult};
 pub use stores::{ItchConfig, ItchStore, SteamConfig, SteamStore, XboxConfig, XboxStore};
