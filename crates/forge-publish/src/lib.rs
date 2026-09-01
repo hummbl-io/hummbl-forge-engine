@@ -6,3 +6,6 @@
 pub mod direct;
 pub mod linux_native;
 pub mod store;
+pub mod stores;
+
+pub use stores::{ItchConfig, ItchStore, SteamConfig, SteamStore, XboxConfig, XboxStore};
