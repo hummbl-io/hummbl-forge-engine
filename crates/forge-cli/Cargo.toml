@@ -27,3 +27,7 @@ tracing-subscriber = { workspace = true }
 tokio = { workspace = true }
 serde_json = { workspace = true }
 toml = { workspace = true }
+
+[dev-dependencies]
+forge-asset = { workspace = true }
+forge-mod = { workspace = true }
