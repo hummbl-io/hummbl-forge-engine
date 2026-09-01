@@ -10,3 +10,7 @@ pub mod profiles;
 pub mod sdk;
 
 pub use profiles::profile::{GameProfile, InstalledMod, ModInstallResult};
+pub use sdk::{
+    DependencyResolver, HotReloader, ModApiVersion, ModContext, ModEvent, ModResult,
+    PermissionChecker, ResolutionResult, SandboxConfig, SandboxError, MOD_API_VERSION,
+};
