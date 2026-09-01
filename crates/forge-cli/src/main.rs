@@ -73,6 +73,23 @@ enum Commands {
 
     /// Check project configuration
     Check,
+
+    /// Development server with watch + hot-reload
+    Dev {
+        /// Enable file watching (auto-rebuild on change)
+        #[arg(long, default_value = "true")]
+        watch: bool,
+    },
+
+    /// Run project tests
+    Test,
+
+    /// Generate project documentation
+    Doc {
+        /// Open documentation in browser after generation
+        #[arg(long)]
+        open: bool,
+    },
 }
 
 #[derive(Subcommand)]
@@ -154,5 +171,8 @@ async fn main() -> anyhow::Result<()> {
         Commands::Version { action } => commands::version::run(action).await,
         Commands::Info => commands::info::run().await,
         Commands::Check => commands::check::run().await,
+        Commands::Dev { watch } => commands::dev::run(watch).await,
+        Commands::Test => commands::test::run().await,
+        Commands::Doc { open } => commands::doc::run(open).await,
     }
 }

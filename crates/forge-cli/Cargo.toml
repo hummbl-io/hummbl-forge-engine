@@ -15,6 +15,7 @@ ue5 = ["forge-build/ue5"]
 
 [dependencies]
 forge-core = { workspace = true }
+forge-adapter = { workspace = true }
 forge-build = { workspace = true }
 forge-publish = { workspace = true }
 forge-mod = { workspace = true }
