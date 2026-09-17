@@ -13,7 +13,7 @@ jobs:
   # Core build & test — runs on every push/PR
   test:
     name: Build & Test
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
@@ -51,7 +51,7 @@ jobs:
   # Cross-compilation for Windows targets
   cross-compile-windows:
     name: Cross-compile (Windows)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
@@ -81,22 +81,15 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-latest
+          - os: linux
+            runner: [self-hosted, Linux]
             target: x86_64-unknown-linux-gnu
             artifact: forge-linux-x86_64
-          - os: ubuntu-latest
-            target: aarch64-unknown-linux-gnu
-            artifact: forge-linux-aarch64
-          - os: macos-latest
-            target: x86_64-apple-darwin
-            artifact: forge-macos-x86_64
-          - os: macos-latest
-            target: aarch64-apple-darwin
-            artifact: forge-macos-aarch64
-          - os: windows-latest
+          - os: windows
+            runner: [self-hosted, Windows]
             target: x86_64-pc-windows-msvc
             artifact: forge-windows-x86_64.exe
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
@@ -120,7 +113,7 @@ jobs:
       - name: Rename binary
         shell: bash
         run: |
-          cp target/${{ matrix.target }}/release/forge${{ matrix.os == 'windows-latest' && '.exe' || '' }} ${{ matrix.artifact }}
+          cp target/${{ matrix.target }}/release/forge${{ matrix.os == 'windows' && '.exe' || '' }} ${{ matrix.artifact }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -144,7 +137,7 @@ jobs:
     name: Release
     needs: [test, build-cli]
     if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     permissions:
       contents: write
     steps:
