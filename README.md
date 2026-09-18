@@ -104,7 +104,7 @@ forge doc --open
 
 ## Architecture
 
-See [docs/ARCHITECTURE-PROPOSAL-v0.1.md](docs/ARCHITECTURE-PROPOSAL-v0.1.md) for the full architecture.
+See [docs/ARCHITECTURE-PROPOSAL-v0.1.md](docs/proposals/ARCHITECTURE-PROPOSAL-v0.1.md) for the full architecture.
 
 ### Crate Structure
 
