@@ -1,0 +1,42 @@
+[
+  {
+    "name": "forge-core",
+    "role": "Core Primitives & Config",
+    "description": "Engine abstraction traits, project metadata parsing (forge.toml), and pipeline lifecycle hooks."
+  },
+  {
+    "name": "forge-adapter",
+    "role": "Runtime Engine Adapters",
+    "description": "Unified adapter interfaces bridging Unreal Engine 5 (UE5) C++ workflows and Bevy/Forge2D ECS environments."
+  },
+  {
+    "name": "forge-build",
+    "role": "Multi-Target Compiler",
+    "description": "Cross-compilation orchestrator targeting Linux native, Windows x86_64, macOS Apple Silicon, and WebAssembly."
+  },
+  {
+    "name": "forge-publish",
+    "role": "Store Distribution",
+    "description": "Automated artifact packaging, digital signature hashing, and direct publishing to Steam, itch.io, and Xbox."
+  },
+  {
+    "name": "forge-asset",
+    "role": "Content-Addressable Asset Store",
+    "description": "Blender to glTF export pipeline, texture compression (KTX2/Basis), and deterministic asset lockfiles."
+  },
+  {
+    "name": "forge-mod",
+    "role": "Universal Modding & Sandboxing",
+    "description": "Isolated mod loader supporting custom game extensions and universal injection for Factorio, Minecraft, and Bevy."
+  },
+  {
+    "name": "forge-version",
+    "role": "Lockfile & Coherence Engine",
+    "description": "Coordinated version resolution guaranteeing lockstep compatibility across engine, game, mod, and assets."
+  },
+  {
+    "name": "forge-cli",
+    "role": "Unified Operator Interface",
+    "description": "Command-line tool providing `forge init`, `forge check`, `forge build`, `forge mod`, and `forge publish`."
+  }
+]

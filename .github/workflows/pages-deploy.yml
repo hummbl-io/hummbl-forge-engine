@@ -1,0 +1,39 @@
+name: Deploy Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+      - feat/agy/cloudflare-pages-publishing
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Build Static Edge SPA
+        run: |
+          python tools/build_site.py
+
+      - name: Run Edge Suite Tests
+        run: |
+          python -m unittest discover -s tests -p 'test_site_build.py' -v
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: 'forge'
+          directory: 'public'
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}

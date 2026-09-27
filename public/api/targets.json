@@ -1,0 +1,26 @@
+[
+  {
+    "platform": "Linux Native",
+    "engine": "Bevy / Forge2D",
+    "format": "ELF Binary + Assets",
+    "status": "Proven End-to-End"
+  },
+  {
+    "platform": "Windows x86_64",
+    "engine": "UE5 / Bevy",
+    "format": "PE32+ Executable",
+    "status": "Supported"
+  },
+  {
+    "platform": "WebAssembly (Wasm)",
+    "engine": "Bevy / WebGL2",
+    "format": "Wasm + Canvas",
+    "status": "Active Target"
+  },
+  {
+    "platform": "Steam / itch.io",
+    "engine": "Multi-Engine",
+    "format": "Store Deployment Bundle",
+    "status": "Automated"
+  }
+]

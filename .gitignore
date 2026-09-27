@@ -43,3 +43,8 @@ build-manifest.json
 test-game/target/
 forge.lock
 .forge-changelog.json
+
+# HUMMBL fleet
+_internal/
+_between/
+_external/
