@@ -86,7 +86,7 @@ jobs:
             target: x86_64-unknown-linux-gnu
             artifact: forge-linux-x86_64
           - os: windows
-            runner: [self-hosted, Windows]
+            runner: [self-hosted, Windows, X64]
             target: x86_64-pc-windows-msvc
             artifact: forge-windows-x86_64.exe
     runs-on: ${{ matrix.runner }}
