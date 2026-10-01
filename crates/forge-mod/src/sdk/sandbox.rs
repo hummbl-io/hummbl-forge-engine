@@ -130,8 +130,8 @@ impl PermissionChecker {
         // BLUE TEAM: Canonicalize the root for comparison
         // If the root doesn't exist, normalize it lexically so that
         // `./mods-data` and `mods-data` compare equal.
-        let canonical_root = std::fs::canonicalize(allowed_root)
-            .unwrap_or_else(|_| normalize_path(allowed_root));
+        let canonical_root =
+            std::fs::canonicalize(allowed_root).unwrap_or_else(|_| normalize_path(allowed_root));
 
         // BLUE TEAM: Manually normalize the path by resolving .. components
         // This handles cases where the file doesn't exist yet (canonicalize fails)

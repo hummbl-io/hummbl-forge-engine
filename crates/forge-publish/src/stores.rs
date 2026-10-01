@@ -394,6 +394,8 @@ fn current_timestamp() -> String {
 }
 
 fn make_executable(path: &Path) -> anyhow::Result<()> {
+    #[cfg(not(unix))]
+    let _ = path;
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;

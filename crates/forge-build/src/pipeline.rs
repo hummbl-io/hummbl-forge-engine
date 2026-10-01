@@ -49,6 +49,7 @@ pub async fn build(
             let cargo_toml_path = std::path::Path::new(cargo_toml);
             let project_dir = cargo_toml_path
                 .parent()
+                .filter(|path| !path.as_os_str().is_empty())
                 .unwrap_or(std::path::Path::new("."))
                 .to_path_buf();
             let adapter = forge_adapter_forge2d::Forge2dAdapter::new(project_dir);
