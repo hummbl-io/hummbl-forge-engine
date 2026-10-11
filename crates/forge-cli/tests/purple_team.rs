@@ -74,15 +74,19 @@ fn purple_lockfile_integrity_blocks_tampering() {
 
 #[test]
 fn purple_symlink_rejected_by_asset_store() {
+    #[cfg(unix)]
     use forge_asset::AssetStore;
 
     let dir = temp_dir("symlink-rejected");
+    #[cfg(unix)]
     let store_dir = dir.join("store");
+    #[cfg(unix)]
     let store = AssetStore::new(&store_dir);
 
     let evil_target = dir.join("evil-target.txt");
     std::fs::write(&evil_target, "secret data").unwrap();
 
+    #[cfg(unix)]
     let symlink_path = dir.join("evil-symlink.txt");
 
     #[cfg(unix)]
@@ -165,10 +169,11 @@ fn purple_sandbox_path_traversal_robust() {
 
     // Windows-style traversal only works on Windows
     #[cfg(windows)]
-    {
-        let mut traversal_attempts = traversal_attempts;
-        traversal_attempts.push("..\\..\\..\\windows\\system32");
-    }
+    let traversal_attempts = {
+        let mut attempts = traversal_attempts;
+        attempts.push("..\\..\\..\\windows\\system32");
+        attempts
+    };
 
     for attempt in traversal_attempts {
         let result = checker.check_read(std::path::Path::new(attempt));

@@ -59,6 +59,8 @@ pub fn local_receipt(_package_path: &Path) -> UploadReceipt {
 }
 
 fn make_executable(path: &Path) -> std::io::Result<()> {
+    #[cfg(not(unix))]
+    let _ = path;
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;

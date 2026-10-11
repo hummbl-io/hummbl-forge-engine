@@ -464,7 +464,6 @@ fn red_dependency_resolution_cycle() {
 
 #[test]
 fn red_permission_escalation_no_perms() {
-    use forge_mod::manifest::ModPermission;
     use forge_mod::sdk::{PermissionChecker, SandboxConfig};
 
     // A mod with NO permissions should not be able to read, write, network, or exec
