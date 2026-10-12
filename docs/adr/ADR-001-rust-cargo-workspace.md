@@ -26,11 +26,11 @@ Use **Rust** as the core language with a **Cargo workspace** for project structu
    builds and manages assets needs this.
 
 3. **Cross-platform:** Rust compiles to Linux, Windows, macOS, and WebAssembly
-   natively. Forge Engine needs to run on Anvil (Windows) and Delta (Linux)
+   natively. Forge Engine needs to run on Windows (Windows) and Linux (Linux)
    and eventually produce builds for all those platforms.
 
 4. **Toolchain already present:** Rust/cargo is confirmed installed on both
-   Anvil and Delta.
+   Windows and Linux.
 
 5. **Ecosystem:** Bevy (our Forge2D foundation) is Rust. wgpu (rendering),
    rapier (physics), mlua (Lua scripting) are all mature Rust crates. Using

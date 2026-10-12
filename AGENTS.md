@@ -7,9 +7,9 @@ and versioning games across multiple runtime engines (UE5, Forge2D/Bevy).
 
 ## Authority
 
-Per the operator's invariants (informed by hummbl-games AGENTS.md):
+Per the operator's invariants (informed by the games repository AGENTS.md):
 
-- **Operator (Reuben Bowlby)** retains: architectural authority, licensing
+- **Operator (the operator)** retains: architectural authority, licensing
   decisions, publication authority, promotion authority, store account
   credentials.
 - **Agents** may: write code, test, propose architecture changes via ADR,
@@ -41,7 +41,7 @@ cargo run -- --help
 - **Format:** `cargo fmt` before commit.
 - **Lint:** `cargo clippy -- -D warnings` must pass.
 - **Commits:** Conventional Commits format.
-- **Branch naming:** `type/agent/short-desc` (e.g. `feat/devin/ue5-adapter`)
+- **Branch naming:** `type/agent/short-desc` (e.g. `feat/agent/ue5-adapter`)
 - **PRs only:** No direct pushes to `main`. No force-push. No `--no-verify`.
 - **GPG signing:** All commits GPG-signed per fleet policy.
 

@@ -13,7 +13,7 @@ jobs:
   # Core build & test — runs on every push/PR
   test:
     name: Build & Test
-    runs-on: [self-hosted, Linux]
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
@@ -51,7 +51,7 @@ jobs:
   # Cross-compilation for Windows targets
   cross-compile-windows:
     name: Cross-compile (Windows)
-    runs-on: [self-hosted, Linux]
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
@@ -82,11 +82,11 @@ jobs:
       matrix:
         include:
           - os: linux
-            runner: [self-hosted, Linux]
+            runner: ubuntu-24.04
             target: x86_64-unknown-linux-gnu
             artifact: forge-linux-x86_64
           - os: windows
-            runner: [self-hosted, Windows, X64]
+            runner: windows-2022
             target: x86_64-pc-windows-msvc
             artifact: forge-windows-x86_64.exe
     runs-on: ${{ matrix.runner }}
@@ -121,12 +121,12 @@ jobs:
           name: ${{ matrix.artifact }}
           path: ${{ matrix.artifact }}
 
-  # UE5 integration tests run on self-hosted Anvil runner
-  # (disabled until Anvil runner is configured)
+  # UE5 integration tests run on a self-hosted runner
+  # (disabled until a runner is configured)
   # ue5-integration:
   #   name: UE5 Integration
   #   runs-on: self-hosted
-  #   if: false  # enable when Anvil runner is ready
+  #   if: false  # enable when a runner is ready
   #   steps:
   #     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
   #     - name: UE5 build test
@@ -137,7 +137,7 @@ jobs:
     name: Release
     needs: [test, build-cli]
     if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: [self-hosted, Linux]
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
