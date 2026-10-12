@@ -311,7 +311,7 @@ hummbl-forge-engine/          (this repo — the meta-layer)
 | Humble (Linux) | x86_64-linux | Humble widget/package | Phase 2 |
 | Xbox/Microsoft | x86_64-windows-xbox | MSIXVC via GDK | Phase 2 |
 | Web | wasm32 | itch.io / direct | Phase 3 |
-| macOS | aarch64-apple | .app bundle | Phase 3 (if Huxley available) |
+| macOS | aarch64-apple | .app bundle | Phase 3 (if a macOS host is available) |
 
 **Phase 1** = prove the pipeline end-to-end with one real game on Linux + Steam.
 **Phase 2** = expand to all target stores.
