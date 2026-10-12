@@ -116,7 +116,7 @@ mod tests {
 [mod_info]
 id = "com.example.mymod"
 name = "My Mod"
-author = "Reuben"
+author = "HUMMBL"
 version = "1.0.0"
 description = "A test mod"
 

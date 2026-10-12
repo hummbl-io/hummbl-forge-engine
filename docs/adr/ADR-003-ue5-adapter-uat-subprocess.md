@@ -40,7 +40,7 @@ Unreal Automation Tool (UAT)** and **UnrealBuildTool (UBT)**.
 
 ## Consequences
 
-- UE5 builds require UE5 to be installed on the build machine (Anvil).
+- UE5 builds require UE5 to be installed on the build machine (Windows).
   This is already the case.
 - Build output parsing depends on UAT's stdout/stderr format, which could
   change between versions. We'll need to handle this gracefully.

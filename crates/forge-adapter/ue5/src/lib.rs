@@ -35,7 +35,7 @@ impl Ue5Adapter {
             ("C:\\Program Files\\Epic Games\\UE_5.5\\Engine", "5.5"),
             ("C:\\Program Files\\Epic Games\\UE_5.4\\Engine", "5.4"),
             ("C:\\Program Files\\Epic Games\\UE_5.3\\Engine", "5.3"),
-            ("/home/reuben/UE_5.4/Engine", "5.4"),
+            ("/usr/local/UE_5.4/Engine", "5.4"),
             ("/opt/UE_5.4/Engine", "5.4"),
         ];
 

@@ -1,8 +1,8 @@
 # HUMMBL Forge Engine — Architecture Proposal v0.1
 
 **Status:** PROPOSAL — awaiting operator approval. Not canonical.
-**Author:** devin (Principal AI Agent)
-**Authority:** Operator (Reuben Bowlby) retains all architectural, licensing, and publication authority per hummbl-games AGENTS.md invariants.
+**Author:** an agent (Principal AI Agent)
+**Authority:** Operator (the operator) retains all architectural, licensing, and publication authority per the games repository AGENTS.md invariants.
 
 ---
 
@@ -23,7 +23,7 @@ Today each of those is a separate toolchain with no shared pipeline. Forge Engin
 
 ### What it is NOT
 
-- Not a replacement for UE5. UE5 stays as the rendering/runtime core for AAA 3D work on Anvil.
+- Not a replacement for UE5. UE5 stays as the rendering/runtime core for AAA 3D work on Windows.
 - Not a from-scratch engine (yet). The custom lightweight engine for 2D/indie is a component, not the whole system.
 - Not a mod tool for a single game. It's a cross-game mod platform.
 - Not a publishing service. It's a build/publish pipeline that targets multiple stores.
@@ -54,7 +54,7 @@ Today each of those is a separate toolchain with no shared pipeline. Forge Engin
            │               │
      ┌─────┴─────┐   ┌─────┴─────┐
      │   UE5     │   │  Forge2D  │
-     │ (Anvil)   │   │ (custom,  │
+     │ (Windows)   │   │ (custom,  │
      │           │   │  lightweight)
      └───────────┘   └───────────┘
 ```
@@ -63,7 +63,7 @@ Today each of those is a separate toolchain with no shared pipeline. Forge Engin
 
 1. **Forge Engine Layer** — the meta-layer you own. Four subsystems, one abstraction layer.
 2. **Engine Abstraction Layer** — adapters that translate Forge commands into engine-specific operations. UE5 adapter talks to Unreal Automation Tool / UBT. Forge2D adapter talks to the custom engine directly.
-3. **Runtime Engines** — UE5 on Anvil for AAA 3D. Forge2D (custom, to be built) for 2D/indie/experimental. Future adapters possible (Godot, etc.).
+3. **Runtime Engines** — UE5 on Windows for AAA 3D. Forge2D (custom, to be built) for 2D/indie/experimental. Future adapters possible (Godot, etc.).
 
 ---
 
@@ -224,7 +224,7 @@ Version System
 
 | Component | Choice | Rationale |
 |-----------|--------|-----------|
-| Core language | **Rust** | Fast, safe, cross-platform, excellent tooling (cargo), already on Anvil. CLI + library from one codebase. |
+| Core language | **Rust** | Fast, safe, cross-platform, excellent tooling (cargo), already on Windows. CLI + library from one codebase. |
 | CLI | **Rust + clap** | Single binary, fast startup, no runtime dependency. `forge build`, `forge publish`, `forge mod install`, etc. |
 | Config format | **TOML** | `forge.toml` for projects, `mod.toml` for mods. Human-readable, well-tooled in Rust. |
 | Build orchestration | **Rust + subprocess** | Forge CLI invokes engine-specific build tools (UAT, cargo, etc.) as subprocesses. |
@@ -232,7 +232,7 @@ Version System
 | Asset pipeline | **Rust + Blender CLI** | Blender headless export via Python scripts. Forge orchestrates. |
 | Store SDK integration | **Rust wrappers** | SteamPipe (steamcmd subprocess), Xbox GDK (CLI tools), Humble (HTTP API). |
 | Testing | **Rust + cargo test** + engine-native | Unit tests for Forge core. Integration tests invoke real builds. |
-| CI | **GitHub Actions** (self-hosted on Anvil) | Anvil has the GPU, UE5, and toolchain. |
+| CI | **GitHub Actions** (self-hosted on Windows) | Windows has the GPU, UE5, and toolchain. |
 
 ### Forge2D (custom lightweight engine)
 
@@ -294,7 +294,7 @@ hummbl-forge-engine/          (this repo — the meta-layer)
 ├── tests/
 │   └── integration/          (end-to-end build/publish/mod tests)
 └── .github/
-    └── workflows/            (CI on self-hosted Anvil runner)
+    └── workflows/            (CI on self-hosted Windows runner)
 ```
 
 **Forge2D** lives in this repo initially (as `crates/forge-adapter/forge2d/` or a sibling crate). If it grows large enough, it can split into its own repo later.
@@ -336,14 +336,14 @@ hummbl-forge-engine/          (this repo — the meta-layer)
 - [ ] `forge publish --target linux-native` → AppImage
 - [ ] `forge publish --target steam` → SteamPipe upload (dry-run first)
 - [ ] One real test game built and published (even a minimal one)
-- [ ] Integration tests on Anvil CI
+- [ ] Integration tests on Windows CI
 
 ### Phase 2: Mod System + More Stores (6-12 weeks)
 - [ ] Mod SDK: `mod.toml` schema, hot-loading, Lua scripting
 - [ ] Mod loader runtime: dependency resolution, sandboxing
 - [ ] Universal mod loader: first game profile (pick one game you own)
 - [ ] Humble publish plugin
-- [ ] Xbox publish plugin (requires GDK on Anvil)
+- [ ] Xbox publish plugin (requires GDK on Windows)
 - [ ] Mod conflict detection + load order
 
 ### Phase 3: Version System + Polish (12+ weeks)
@@ -356,35 +356,35 @@ hummbl-forge-engine/          (this repo — the meta-layer)
 
 ---
 
-## 8. Anvil as Primary Machine
+## 8. Windows as Primary Machine
 
-Anvil is the primary development machine because:
+Windows is the primary development machine because:
 - UE5 is installed (required for UE5 adapter development and testing)
 - Good GPU (required for UE5 rendering and Forge2D wgpu testing)
 - Blender installed (required for asset pipeline)
 - Rust/cargo, Node, .NET, Python all confirmed installed
 - Already has self-hosted GitHub Actions runner capability
 
-**Delta** (this machine) serves as:
+**Linux** (this machine) serves as:
 - Secondary development (Rust code compiles here, CLI work)
 - Documentation, planning, agent coordination
 - CI for non-GPU tests (forge-core, forge-cli, forge-version)
 
 **Workflow:**
-- Rust code: develop on Delta or Anvil, cargo workspace is portable
-- UE5 work: develop on Anvil (UE5 not on Delta)
-- Asset work: develop on Anvil (Blender not on Delta)
-- Testing: cargo test on both; UE5 integration tests on Anvil only
+- Rust code: develop on Linux or Windows, cargo workspace is portable
+- UE5 work: develop on Windows (UE5 not on Linux)
+- Asset work: develop on Windows (Blender not on Linux)
+- Testing: cargo test on both; UE5 integration tests on Windows only
 
 ---
 
 ## 9. Authority & Governance
 
-Per the hummbl-games AGENTS.md invariants (which inform this repo's posture):
+Per the the games repository AGENTS.md invariants (which inform this repo's posture):
 
-- **Operator (Reuben)** retains: architectural authority, licensing decisions, publication authority, promotion authority
-- **devin (this agent)** may: draft architecture, write code, test, propose, open PRs
-- **devin may NOT**: choose the permanent architecture without approval, choose licenses, make public claims, import third-party game code without approval, merge own PRs
+- **Operator (the operator)** retains: architectural authority, licensing decisions, publication authority, promotion authority
+- **an agent (this agent)** may: draft architecture, write code, test, propose, open PRs
+- **an agent may NOT**: choose the permanent architecture without approval, choose licenses, make public claims, import third-party game code without approval, merge own PRs
 
 This proposal is a **draft for operator approval**. Nothing here is canonical until you say yes.
 
@@ -409,10 +409,10 @@ This proposal is a **draft for operator approval**. Nothing here is canonical un
 3. Scaffold the Cargo workspace
 4. Implement `forge-core` + `forge-cli` skeleton
 5. Write ADRs for the foundational decisions
-6. Set up CI on self-hosted Anvil runner
+6. Set up CI on self-hosted Windows runner
 7. Begin Phase 1: UE5 adapter + first build pipeline
 
-All of this is code I can write on Delta. UE5-specific testing happens on Anvil when it's awake.
+All of this is code I can write on Linux. UE5-specific testing happens on Windows when it's awake.
 
 ---
 

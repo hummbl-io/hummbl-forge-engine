@@ -1,7 +1,7 @@
 # RED TEAM Security Audit Report — HUMMBL Forge Engine
 
 **Date:** 2026-09-21
-**Auditor:** devin (automated)
+**Auditor:** an agent (automated)
 **Scope:** All Forge Engine crates, CLI, mod system, asset pipeline, publish pipeline
 **Method:** Adversarial testing via `crates/forge-cli/tests/red_team.rs` (13 tests)
 
