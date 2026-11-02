@@ -20,7 +20,7 @@ exclude = [
 version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
-authors = ["HUMMBL, LLC"]
+authors = ["HUMMBL"]
 repository = "https://github.com/hummbl-io/hummbl-forge-engine"
 homepage = "https://github.com/hummbl-io/hummbl-forge-engine"
 
